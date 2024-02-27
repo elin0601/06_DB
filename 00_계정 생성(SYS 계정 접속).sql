@@ -32,3 +32,19 @@ GRANT CONNECT, RESOURCE TO WORKBOOK;
 
 -- 객체 생성 공간 할당
 ALTER USER WORKBOOK DEFAULT TABLESPACE SYSTEM QUOTA UNLIMITED ON SYSTEM;
+
+--------------------------------------------------------------------------------
+
+-- 계정 LOCK해제
+ALTER USER WORKBOOK ACCOUNT UNLOCK;
+
+-- 계정 패스워드 설정
+ALTER USER WORKBOOK IDENTIFIED BY KH1234;
+
+-- 계정에 권한 부여 (DBA, session, ..)
+GRANT DBA TO WORKBOOK;
+
+-- 계정 확인
+SELECT * FROM ALL_USERS;
+
+--------------------------------------------------------------------------------
