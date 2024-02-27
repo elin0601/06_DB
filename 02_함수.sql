@@ -403,6 +403,215 @@ SELECT  EMP_ID, EMP_NAME,
 FROM EMPLOYEE;
 
 
+---------------------------------------------------------
+
+-- <선택 함수>
+-- 여러 가지 경우에 따라 알맞은 결과를 선택하는 함수
+-- (if, switch문과 비슷)
+
+-- DECODE(컬럼명 | 계산식, 조건1, 결과1, 조건2, 결과2, ... [,아무것도 만족 X])
+
+-- 컬럼명 | 계산식의 값이 일치하는 조건이 있으면
+-- 해당 조건 오른쪽에 작성된 결과가 반환된다.
+
+-- EMPOLYEE 테이블에서 
+-- 모든 사원의 이름, 주민등록번호, 성별 조회
+SELECT EMP_NAME, EMP_NO, DECODE( SUBSTR(EMP_NO, 8, 1), '1', '남자', '2', '여자' ) 성별
+FROM EMPLOYEE;
+
+-- EMPLOYEE 테이블에서
+-- 직급코드가 'J7'인 직원은 급여 + 급여의 10%
+-- 직급코드가 'J6'인 직원은 급여 + 급여의 15%
+-- 직급코드가 'J5'인 직원은 급여 + 급여의 20%
+-- 나머지 직급코드의 직원은 급여 + 급여의 5%  지급
+-- 사원명, 직급코드, 기존급여, 지급급여 조회
+SELECT  EMP_NAME 사원명, JOB_CODE 직급코드, SALARY 급여 ,
+	DECODE(JOB_CODE, 
+	'J7', SALARY*1.1,
+	'J6', SALARY*1.15,
+	'J6', SALARY*1.2,
+				SALARY*1.05) 지급급여
+FROM EMPLOYEE;
+
+
+---------------
+
+-- CASE 
+--	  WHEN 조건1 THEN 결과1
+--	  WHEN 조건2 THEN 결과2
+--	  WHEN 조건3 THEN 결과3
+--	  ELSE 결과
+-- END
+
+-- DECODE는 계산식|컬럼 값이 딱 떨어지는 경우에만 사용 가능.
+-- CASE는 계산식|컬럼 값을 범위로 지정할 수 있다. 
+
+
+-- EMPLOYEE 테이블에서 사번, 이름, 급여, 구분을 조회
+-- 구분은 받는 급여에 따라 초급, 중급, 고급으로 조회
+-- 급여 500만 이상 = '고급'
+-- 급여 300만 이상 ~ 500만 미만 = '중급'
+-- 급여 300미만 = '초급'
+-- 단, 부서코드가 D6, D9인 사원만 직급코드 오름차순으로 조회
+/*3*/SELECT EMP_ID , EMP_NAME , SALARY, 
+	CASE 
+		WHEN SALARY >= 5000000 THEN '고급'
+		WHEN SALARY >= 3000000 THEN '중급'
+		ELSE '초급'	
+	END 구분
+/*1*/FROM EMPLOYEE
+/*2*/WHERE DEPT_CODE IN('D6', 'D9')
+/*4*/ORDER BY JOB_CODE;
+
+-- SELECT절에 작성된 컬럼이 아니라고해서
+-- ORDER BY절에서 사용 못하는게 아님!! 
+--> FROM절에서 해석되서 사용 가능한 상태
+
+
+--------------------------------------------------------
+
+/************* 그룹 함수 *************/
+
+--  N개의 행의 컬럼 값을 전달하여 1개의 결과가 반환
+--	(그룹의 수가 늘어나면 그룹의 수 만큼 결과를 반환)
+
+
+-- SUM(숫자가 기록된 컬럼명) : 그룹의 합계를 반환
+-- 모든 사원의 급여 합
+SELECT SUM(SALARY) FROM EMPLOYEE;
+
+-- 부서 코드가 'D6'인 사원들의 급여 함
+/*3*/SELECT SUM(SALARY)				-- 3) SALARY 컬럼 값의 합을 조회
+/*1*/FROM EMPLOYEE						-- 1) EMPLOYEE 테이블 23행 중
+/*2*/WHERE DEPT_CODE = 'D6';	-- 2) DEPT_CODE가 'D6'인 행만 모아서
+
+
+-- 2000년대 이루(2000년 포함) 입사자들의 급여 합 조회
+SELECT SUM(SALARY) 
+FROM EMPLOYEE
+WHERE EXTRACT(YEAR FROM HIRE_DATE) >= 2000;
+
+
+--------------------------------------------------------
+
+-- AVG(숫자만 기록된 컬럼) : 그룹의 평균
+
+-- 모든 사원 평균 급여 조회
+SELECT AVG(SALARY) FROM EMPLOYEE;
+
+-- 평균 급여 조회(소수점 내림 처리)
+SELECT FLOOR( AVG(SALARY) ) FROM EMPLOYEE;
+
+/* 그룹 함수는 여러 개를 동시에 조회할 수 있다 */
+-- (조회 결과가 사각형 형태의 테이블 모양이면 조회 가능하다!!)
+SELECT SUM(SALARY), FLOOR( AVG(SALARY) ) FROM EMPLOYEE;
+
+/* SELECT SALARY, FLOOR( AVG(SALARY) ) FROM EMPLOYEE; */ 
+-- ORA-00937: 단일 그룹의 그룹 함수가 아닙니다
+
+
+--------------------------------------------------------
+-- MAX(컬럼명) : 최대값
+-- MIN(컬럼명) : 최소값
+
+-- 날짜 대소 비교 : 과거 < 미래
+-- 문자열 대소 비교 : 유니코드순서  (문자열 순서  A < Z)
+
+-- 모든 사원 중
+-- 가장 빠른 입사일, 최근 입사일
+-- 이름 오름차순에서 제일 먼저 작성되는 이름, 마지막에 작성되는 이름
+SELECT 
+	MIN(HIRE_DATE), MAX(HIRE_DATE),  
+	MIN(EMP_NAME), MAX(EMP_NAME)
+FROM EMPLOYEE;
+
+
+--------------------------------------------------------
+
+-- COUNT(* | [DISTINCT] 컬럼명) : 조회된 행의 개수를 반환
+
+-- COUNT(*) : 조회된 모든 행의 개수를 반환
+
+-- COUNT(컬럼명) : 지정된 컬럼 값이 NULL이 아닌 행의 개수를 반환
+-- 					(NULL인 행 미포함)
+
+-- COUNT(DISTINCT 컬럼명) : 
+	-- 지정된 컬럼에서 중복 값을 제외한 행의 개수를 반환
+	-- EX) A A B C D D D E : 5개 (중복은 한 번만 카운트)
+
+
+-- EMPLOYEE 테이블 전체 행의 개수
+SELECT COUNT(*)
+FROM EMPLOYEE; -- 23행
+
+-- EMPLOYEE 테이블에서 부서코드가 'D6'인 사원의 수
+SELECT COUNT(*) 
+FROM EMPLOYEE
+WHERE DEPT_CODE = 'D5'; -- 6행
+
+-- 전화번호가 있는 사원의 수 - V1
+SELECT COUNT(*)  
+FROM EMPLOYEE
+WHERE PHONE IS NOT NULL; -- 20행
+
+-- 전화번호가 있는 사원의 수 - V2
+--> NULL이 아닌 행의 수만 카운트
+SELECT COUNT(PHONE) FROM EMPLOYEE; -- 20행
+
+
+-- EMPLOYEE 테이블에 존재하는 부서코드의 수를 조회
+-- (EMPLOYEE 테이블에 부서코드가 몇종류?)
+SELECT COUNT(DISTINCT  DEPT_CODE)
+FROM EMPLOYEE; 
+-- 7행 나와야 될 것 같은데 6행만 나옴!!
+--> 왜? COUNT() 내에 컬럼명을 작성하면 NULL은 제외
+
+
+-- EMPLOYEE 테이블에 존재하는 여자 사원의 수
+SELECT COUNT(*) 여자
+FROM EMPLOYEE
+WHERE SUBSTR(EMP_NO, 8, 1) = '2'; -- 8행
+
+-- EMPLOYEE 테이블에 존재하는 남자 사원의 수
+SELECT COUNT(*) 남자
+FROM EMPLOYEE
+WHERE SUBSTR(EMP_NO, 8, 1) = '1'; -- 15행
+
+-- EMPLOYEE 테이블에 존재하는 여자, 남자 사원의 수(COUNT 버전)
+SELECT 
+	COUNT(DECODE( SUBSTR( EMP_NO, 8, 1), '2', '여자', NULL) ) 여자,
+	COUNT(DECODE( SUBSTR( EMP_NO, 8, 1), '1', '남자', NULL) ) 남자
+FROM EMPLOYEE;
+
+-- EMPLOYEE 테이블에 존재하는 여자, 남자 사원의 수(SUM 버전)
+
+SELECT 
+	SUM(DECODE( SUBSTR( EMP_NO, 8, 1) , '2', 1, 0)) 여자,
+	SUM(DECODE( SUBSTR( EMP_NO, 8, 1) , '1', 1, 0)) 남자
+FROM EMPLOYEE;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
