@@ -417,7 +417,7 @@ WHERE (SUBSTR(EMP_NO,1,1)='7' AND  SUBSTR(EMP_NO,8,1)='2') AND EMP_NAME LIKE '�
 
 
 -- 2. 이름에 '형'자가 들어가는 직원들의 사번, 사원명, 부서명을 조회하시오.
-SELECT EMP_NO, EMP_NAME, DEPT_TITLE
+SELECT EMP_ID, EMP_NAME, DEPT_TITLE
 FROM EMPLOYEE E
 JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID)
 WHERE EMP_NAME LIKE '%형%';
@@ -425,11 +425,13 @@ WHERE EMP_NAME LIKE '%형%';
 
 -- 3. 해외영업 1부, 2부에 근무하는 사원의 
 -- 사원명, 직급명, 부서코드, 부서명을 조회하시오.
+-- + 사번 오름차순 정렬
 SELECT EMP_NAME, JOB_NAME , DEPT_CODE, DEPT_TITLE 
 FROM JOB
 JOIN EMPLOYEE USING (JOB_CODE)
 JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID)
-WHERE DEPT_TITLE IN ('해외영업1부' ,'해외영업2부');
+WHERE DEPT_TITLE IN ('해외영업1부' ,'해외영업2부')
+ORDER BY EMP_ID;
 
 
 --4. 보너스포인트를 받는 직원들의 사원명, 보너스포인트, 부서명, 근무지역명을 조회하시오.
