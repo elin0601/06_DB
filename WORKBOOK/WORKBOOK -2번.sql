@@ -74,18 +74,25 @@ FROM TB_GRADE
 WHERE STUDENT_NO = 'A517178';
 
 
--- 8번
+-- 8번 * 
 -- 학과별 학생 수를 구하여 "학과번호", "학생수(명)"의 형태로 조회하시오.
-
+SELECT DEPARTMENT_NO 학과번호 , STUDENT_NO "학생수(명)"
+FROM TB_STUDENT
+JOIN TB_DEPARTMENT USING (DEPARTMENT_NO);
 
 -- 9번
 -- 지도 교수를 배정받지 못한 학생의 수를 조회하시오.
-
+SELECT COUNT(*) 
+FROM TB_STUDENT
+WHERE COACH_PROFESSOR_NO IS NULL;
 
 -- 10번
 -- 학번이 A112113인 김고운 학생의 년도 별 평점을 구하는 SQL문을 작성하시오.
 -- 단, 이때 출력화면의 헤더는 "년도", "년도 별 평점"이라고 찍히게 하고, 
 -- 점수는 반올림하여 소수점 이하 한자리까지만 표시한다.
+SELECT 
+FROM TB_GRADE;
+
 
 
 -- 11번
