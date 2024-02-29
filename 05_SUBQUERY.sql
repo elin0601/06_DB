@@ -94,17 +94,17 @@ WHERE SALARY >= (SELECT AVG(SALARY) FROM EMPLOYEE);
 -- 전 직원의 급여 평균보다 많은 급여를 받는 직원의 
 -- 이름, 직급명, 부서명, 급여를 직급 순으로 정렬하여 조회
 
-SELECT EMP_NAME, JOB_NAME, DEPT_TITLE, SALARY
-FROM EMPLOYEE 
-JOIN JOB USING (JOB_CODE) 
+SELECT EMP_NAME, JOB_NAME , DEPT_TITLE, SALARY 
+FROM EMPLOYEE
+JOIN JOB USING (JOB_CODE)
 LEFT JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID)
-WHERE SALARY > (SELECT AVG(SALARY) FROM EMPLOYEE) -- 평균 급여
+WHERE SALARY > ( SELECT AVG(SALARY) FROM EMPLOYEE)
 ORDER BY JOB_CODE;
 
 
 -- 가장 적은 급여를 받는 직원의
 -- 사번, 이름, 직급명, 부서코드, 급여, 입사일을 조회
-SELECT EMP_ID, EMP_NAME, JOB_NAME, DEPT_CODE, SALARY, HIRE_DATE
+SELECT EMP_ID, EMP_NAME, JOB_NAME, DEPT_CODE , SALARY, HIRE_DATE
 FROM EMPLOYEE
 NATURAL JOIN JOB -- 자연 조인 (컬럼명, 타입 일치하는 컬럼끼리 연결)
 WHERE SALARY = (SELECT MIN(SALARY) FROM EMPLOYEE);
@@ -112,14 +112,14 @@ WHERE SALARY = (SELECT MIN(SALARY) FROM EMPLOYEE);
                  
 -- 노옹철 사원의 급여보다 많이 받는 직원의 
 -- 사번, 이름, 부서명, 직급명, 급여를 조회
-SELECT EMP_ID, EMP_NAME, DEPT_TITLE, JOB_NAME, SALARY
-FROM EMPLOYEE
-JOIN JOB USING(JOB_CODE)
-LEFT JOIN DEPARTMENT ON(DEPT_CODE = DEPT_ID)
+SELECT EMP_ID, EMP_NAME, DEPT_TITLE , JOB_NAME , SALARY
+FROM EMPLOYEE 
+JOIN JOB USING (JOB_CODE)
+LEFT JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID)
 WHERE SALARY > 
 	(SELECT SALARY 
 	FROM EMPLOYEE 
-	WHERE EMP_NAME ='노옹철');
+	WHERE EMP_NAME = '노옹철');
         
  
 
@@ -127,16 +127,16 @@ WHERE SALARY >
 -- 부서명, 급여 합계를 조회 
 
 -- 1) 부서별 급여 합 중 가장 큰값 조회
-SELECT MAX(SUM(SALARY))
+SELECT MAX(SUM(SALARY)) 
 FROM EMPLOYEE
 GROUP BY DEPT_CODE;
 
 
 -- 2) 부서별 급여합이 17700000인 부서의 부서명과 급여 합 조회
-SELECT DEPT_TITLE, SUM(SALARY)
+SELECT DEPT_TITLE, SUM(SALARY) 
 FROM EMPLOYEE
 LEFT JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID)
-GROUP BY DEPT_TITLE
+GROUP BY DEPT_TITLE 
 HAVING SUM(SALARY) = 17700000;
 
 
@@ -156,11 +156,10 @@ HAVING SUM(SALARY) =
 	
 -- 부서별 인원 수가 3명 이상인 부서의
 -- 부서명, 인원 수 조회 (서브쿼리 x)
-SELECT 
-	NVL(DEPT_TITLE, '없음') "부서명", 
-	COUNT(*) "인원 수"
+
+SELECT NVL(DEPT_TITLE, '없음')부서명 , COUNT(*) "인원 수"
 FROM EMPLOYEE
-LEFT JOIN DEPARTMENT ON (DEPT_ID = DEPT_CODE)
+LEFT JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID)
 GROUP BY DEPT_TITLE
 HAVING COUNT(*) >= 3;
 	
@@ -168,16 +167,14 @@ HAVING COUNT(*) >= 3;
 	
 -- 부서별 인원 수가 가장 적은 부서의
 -- 부서명, 인원 수 조회 (서브쿼리 O)
-SELECT 
-	NVL(DEPT_TITLE, '없음') "부서명", 
-	COUNT(*) "인원 수"
+SELECT NVL(DEPT_TITLE, '없음')부서명 , COUNT(*) "인원 수"
 FROM EMPLOYEE
-LEFT JOIN DEPARTMENT ON (DEPT_ID = DEPT_CODE)
+LEFT JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID)
 GROUP BY DEPT_TITLE
 HAVING COUNT(*) = 
 	(SELECT MIN(COUNT(*))
 	FROM EMPLOYEE
-	GROUP BY DEPT_CODE);
+GROUP BY DEPT_CODE);
 	
 	
 
@@ -210,10 +207,10 @@ GROUP BY DEPT_CODE;
 -- 2) 부서별 최고 급여 받는 직원 조회
 SELECT EMP_NAME, JOB_CODE, DEPT_CODE, SALARY
 FROM EMPLOYEE
-WHERE SALARY IN 
-	(SELECT MAX(SALARY)
+WHERE SALARY IN (
+	SELECT MAX(SALARY)
 	FROM EMPLOYEE
-	GROUP BY DEPT_CODE); 
+	GROUP BY DEPT_CODE);
 	-- IN 내부 서브쿼리 결과 7행 --> 다중행 서브쿼리 
 
 
@@ -257,9 +254,7 @@ WHERE EMP_ID NOT IN (
 	WHERE MANAGER_ID IS NOT NULL
 );
 
-
-            
-
+     
 -- 5) 3, 4의 조회 결과를 하나로 합침 -> SELECT절 SUBQUERY
 -- * SELECT 절에도 서브쿼리 사용할 수 있음
 
@@ -417,7 +412,6 @@ WHERE DEPT_CODE IN (
 );
                       
 
-
 -----------------------------------------------------------------------
 
 -- 3. 다중열 서브쿼리 (단일행 = 결과값은 한 행)   (1행 N열)
@@ -495,7 +489,6 @@ WHERE (DEPT_CODE, JOB_CODE) = (
 		FROM EMPLOYEE 
 		WHERE EXTRACT (YEAR FROM HIRE_DATE) = 2000
 );
-
 
 
 -- 3. 77년생 여자 사원과 동일한 부서이면서 동일한 사수를 가지고 있는 사원을 조회하시오
@@ -601,11 +594,9 @@ WHERE DEPT_CODE = 'D1';
 
 SELECT EMP_ID, EMP_NAME, DEPT_CODE,
 	NVL(DEPT_TITLE, '소속없음'), JOB_NAME, HIRE_DATE
-	
 FROM EMPLOYEE "MAIN"
 LEFT JOIN DEPARTMENT ON (DEPT_CODE = DEPT_ID)
 JOIN JOB USING (JOB_CODE)
-
 WHERE HIRE_DATE = (
 	/* 메인 쿼리에서 전달 받은 행의 컬럼 값 중
 	 * DEPT_CODE 값을 이용해
@@ -617,9 +608,7 @@ WHERE HIRE_DATE = (
 	WHERE NVL("SUB".DEPT_CODE, '소속없음') = NVL("MAIN".DEPT_CODE, '소속없음')
 				--> NULL은 비교가 불가능하기 때문에
 				 -- NVL을 이용해서 NULL이 아닌 비교 가능한 값으로 변경
-	AND ENT_YN != 'Y'
-)
-
+	AND ENT_YN != 'Y')
 ORDER BY HIRE_DATE;
 
 
@@ -892,11 +881,11 @@ OR MANAGER_ID = 214
 AND DEPT_CODE = 'D1';
 
 
--- 6. * 부서별 입사일이 가장 빠른 사원의
+-- 6.  부서별 입사일이 가장 빠른 사원의
 -- 사번, 이름, 부서명(NULL이면 '소속없음'), 직급명, 입사일을 조회하고
 -- 입사일이 빠른 순으로 조회하시오
 -- 단, 퇴사한 직원은 제외하고 조회..
-SELECT EMP_ID, EMP_NAME , NVL(DEPT_TITLE, '소속 없음'), JOB_NAME, HIRE_DATE
+SELECT EMP_ID, EMP_NAME , NVL(DEPT_TITLE, '소속 없음'), JOB_NAME, TO_CHAR(HIRE_DATE, 'YY/MM/DD') HIRE_DATE
 --  NVL2(컬럼명, NULL이 아닌 경우 변경할 값  , NULL인 경우 변경할 값)
 FROM DEPARTMENT 
 RIGHT JOIN EMPLOYEE ON (DEPT_ID = DEPT_CODE)
@@ -916,7 +905,7 @@ ORDER BY HIRE_DATE;
 -- 단 연봉은 \124,800,000 으로 출력되게 하세요. (\ : 원 단위 기호)
 SELECT EMP_ID , EMP_NAME, JOB_NAME, 
 		FLOOR((MONTHS_BETWEEN(SYSDATE, TO_DATE(19 || SUBSTR(EMP_NO, 1, 6), 'RRMMDD'))) / 12) 나이, 
-		(SALARY * 12) * (1 + NVL(BONUS, 1) )보너스포함연봉
+		TO_CHAR((SALARY * 12) * (1 + NVL(BONUS, 1)), 'L999,999,999')보너스포함연봉
 FROM EMPLOYEE MAIN
 JOIN JOB J ON (MAIN.JOB_CODE = J.JOB_CODE)
 WHERE TO_DATE(19||SUBSTR(EMP_NO,1,6)) = (
