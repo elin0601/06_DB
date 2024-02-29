@@ -119,14 +119,14 @@ HAVING COUNT(*) > 1
 ORDER BY STUDENT_NAME;
 
 
--- 13번 *
+-- 13번
 -- 학번이 A112113인 김고운 학생의 학점을 조회하려고 한다.
 -- 년도, 학기 별 평점과 년도 별 누적 평점, 총 평점을 구하는 SQL을 작성하시오.
 -- (단, 평점은 소수점 1자리까지만 반올림하여 표시한다.)
-SELECT SUBSTR(TERM_NO, 1,4) 년도, SUBSTR(TERM_NO, 5,2) 학기, ROUND(AVG(POINT),1) "평점"
+SELECT NVL(SUBSTR(TERM_NO,1,4), ' ')  년도, NVL(SUBSTR(TERM_NO,5,2),' ')  학기, ROUND(AVG(POINT),1)  평점
 FROM TB_GRADE
 WHERE STUDENT_NO = 'A112113'
-GROUP BY TERM_NO, POINT
-ORDER BY TERM_NO;
+GROUP BY ROLLUP(SUBSTR(TERM_NO,1,4),SUBSTR(TERM_NO,5,2))
+ORDER BY SUBSTR(TERM_NO,1,4);
 
 
