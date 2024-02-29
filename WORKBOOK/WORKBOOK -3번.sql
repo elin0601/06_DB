@@ -72,11 +72,9 @@ JOIN TB_PROFESSOR USING (DEPARTMENT_NO)
 ORDER BY PROFESSOR_NAME;
 
 
--- 9번
+-- 9번 *
 -- 8번의 결과 중 '인문 사회' 계열에 속한
 -- 과목명, 교수이름을 과목명 오름차순으로 조회하시오.
-SELECT 
-FROM 
 
 
 -- 10번 * 
