@@ -5,6 +5,7 @@ SELECT  STUDENT_NAME "학생 이름", STUDENT_ADDRESS "주소지"
 FROM TB_STUDENT
 ORDER BY STUDENT_NAME;
 
+
 -- 2번
 -- 휴학중인 학생들의 이름과 주민번호를 나이가 적은 순서 조회하시오
 SELECT STUDENT_NAME, STUDENT_SSN 
@@ -66,40 +67,58 @@ JOIN TB_CLASS USING (DEPARTMENT_NO);
 
 -- 8번 * 
 -- 과목, 해당 과목 교수 이름을 조회하시오.
-SELECT CLASS_NAME , PROFESSOR_NAME
+SELECT CLASS_NAME, PROFESSOR_NAME
 FROM TB_CLASS
-JOIN TB_PROFESSOR USING (DEPARTMENT_NO)
-ORDER BY PROFESSOR_NAME;
-
+JOIN TB_PROFESSOR USING (DEPARTMENT_NO);
 
 -- 9번 *
 -- 8번의 결과 중 '인문 사회' 계열에 속한
 -- 과목명, 교수이름을 과목명 오름차순으로 조회하시오.
+SELECT 
+FROM 
 
 
--- 10번 * 
+-- 10번
 -- 음악학과 학생들의 "학번", "학생 이름", "전체 평점"을 조회하시오.
 -- (단, 평점은 소수점 1자리까지만 반올림하여 표시한다.)
-SELECT STUDENT_NO 학번, STUDENT_NAME "학생 이름", ROUND(AVG(POINT),1) "전체 평점"
-FROM TB_STUDENT
-JOIN TB_DEPARTMENT USING(DEPARTMENT_NO)
-JOIN TB_GRADE USING (STUDENT_NO)
-WHERE DEPARTMENT_NO = 059;
+SELECT STUDENT_NO "학번", STUDENT_NAME "학생 이름" , ROUND(AVG(POINT),1) "전체 평점"
+FROM TB_GRADE 
+JOIN TB_STUDENT USING (STUDENT_NO)
+JOIN TB_DEPARTMENT USING (DEPARTMENT_NO)
+WHERE DEPARTMENT_NAME = '음악학과'
+GROUP BY STUDENT_NO, STUDENT_NAME
+ORDER BY STUDENT_NO;
+ 
 
-
--- 11번
+-- 11번 *
 -- 학번이 A313047인 학생의 학과이름, 학생이름, 지도교수 이름을 조회하시오.
-
+SELECT DISTINCT DEPARTMENT_NAME "학과이름 ", STUDENT_NAME "학생이름", PROFESSOR_NAME 지도교수이름
+FROM TB_STUDENT 
+JOIN TB_DEPARTMENT USING (DEPARTMENT_NO)
+JOIN TB_PROFESSOR USING (DEPARTMENT_NO)
+WHERE STUDENT_NO = 'A313047';
 
 
 -- 12번
 -- 2007년도에 '인간관계론' 과목을 수강한 학생을 찾아
 -- 학생이름과 수강학기를 조회하는 SQL을 작성하시오.
+SELECT STUDENT_NAME , TERM_NO
+FROM TB_STUDENT 
+JOIN TB_GRADE USING (STUDENT_NO)
+JOIN TB_CLASS USING (CLASS_NO)
+WHERE SUBSTR(TERM_NO, 1, 4) = 2007 
+AND CLASS_NAME = '인간관계론'
+ORDER BY 1;
 
-
+	
 -- 13번
 -- 예체능 계열 과목 중 과목 담당교수를 한 명도 배정받지 못한 과목을 찾아
 -- 과목 이름, 학과 이름을 조회하시오.
+SELECT CLASS_NAME , DEPARTMENT_NAME
+FROM TB_CLASS
+JOIN TB_DEPARTMENT  USING (DEPARTMENT_NO)
+JOIN TB_STUDENT USING (DEPARTMENT_NO)
+WHERE CATEGORY  = '예체능';
 
 
 -- 14번
@@ -117,6 +136,7 @@ WHERE DEPARTMENT_NO = 059;
 -- 환경조경학과 전공과목들의 과목 별 평점을 조회하시오.
 -- (평점은 TRUNC를 이용해 소수점 아래 둘째 자리까지 표시)
 
+--------------------------
 
 -- 17번
 -- 춘 기술대학교에 다니고 있는 최경희 학생과 같은 과 학생들의 이름과 주소를 조회하시오.
