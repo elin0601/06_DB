@@ -590,32 +590,3 @@ SELECT
 	SUM(DECODE( SUBSTR( EMP_NO, 8, 1) , '1', 1, 0)) 남자
 FROM EMPLOYEE;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

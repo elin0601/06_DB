@@ -111,7 +111,7 @@ AND CLASS_NAME = '인간관계론'
 ORDER BY 1;
 
 	
--- 13번
+-- 13번 * 
 -- 예체능 계열 과목 중 과목 담당교수를 한 명도 배정받지 못한 과목을 찾아
 -- 과목 이름, 학과 이름을 조회하시오.
 SELECT CLASS_NAME , DEPARTMENT_NAME
@@ -121,22 +121,36 @@ JOIN TB_STUDENT USING (DEPARTMENT_NO)
 WHERE CATEGORY  = '예체능';
 
 
--- 14번
+-- 14번 * 
 -- 춘 기술대학교 서반아어학과 학생들의 지도교수를 게시하고자 한다. 
 -- 학생이름, 지도교수이름 학번이 높은 순서로 조회하는 SQL을 작성하시오.
 -- 단, 지도교수가 없을 경우 "지도교수 미지정"으로 표시
+-- 서반아어학과 학생들 
+SELECT STUDENT_NAME 학생이름, DEPARTMENT_NO , COACH_PROFESSOR_NO
+FROM TB_DEPARTMENT
+JOIN TB_STUDENT USING (DEPARTMENT_NO)
+WHERE DEPARTMENT_NAME = '서반아어학과';
 
 
--- 15번
+-- 15번 * 
 -- 휴학생이 아닌 학생 중 평점이 4.0 이상인 학생을 찾아
 -- 학생의 학번, 이름, 학과, 이름, 평점을 조회하시오.
+SELECT STUDENT_NO 학번 , STUDENT_NAME 이름 , DEPARTMENT_NAME "학과 이름" , AVG(POINT) 평점
+FROM TB_DEPARTMENT 
+JOIN TB_STUDENT USING (DEPARTMENT_NO)
+JOIN TB_GRADE USING (STUDENT_NO)
+WHERE POINT >= 4.0 AND ABSENCE_YN = 'N'
+GROUP BY STUDENT_NAME, STUDENT_NO, DEPARTMENT_NAME
+ORDER BY STUDENT_NO ;
 
 
 -- 16번
 -- 환경조경학과 전공과목들의 과목 별 평점을 조회하시오.
 -- (평점은 TRUNC를 이용해 소수점 아래 둘째 자리까지 표시)
+SELECT CLASS_NO , CLASS_NAME , POINT
+FROM TB_CLASS 
+JOIN TB_GRADE USING (CLASS_NO);
 
---------------------------
 
 -- 17번
 -- 춘 기술대학교에 다니고 있는 최경희 학생과 같은 과 학생들의 이름과 주소를 조회하시오.
