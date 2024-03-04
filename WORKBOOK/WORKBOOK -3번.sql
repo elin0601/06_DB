@@ -123,10 +123,10 @@ ORDER BY 1;
 SELECT CLASS_NAME , DEPARTMENT_NAME
 FROM TB_CLASS 
 JOIN TB_DEPARTMENT USING (DEPARTMENT_NO)
-WHERE CATEGORY = '예체능'
+WHERE CATEGORY = '예체능';
 
 
--- 14번 * 
+-- 14번 * 지도교수 미지정????
 -- 춘 기술대학교 서반아어학과 학생들의 지도교수를 게시하고자 한다. 
 -- 학생이름, 지도교수이름 학번이 높은 순서로 조회하는 SQL을 작성하시오.
 -- 단, 지도교수가 없을 경우 "지도교수 미지정"으로 표시
@@ -140,7 +140,7 @@ WHERE DEPARTMENT_NAME = '서반아어학과'
 GROUP BY STUDENT_NAME , PROFESSOR_NAME;
 
 
--- 15번 * 
+-- 15번 * 점이 4.0 이상인 학생???
 -- 휴학생이 아닌 학생 중 평점이 4.0 이상인 학생을 찾아
 -- 학생의 학번, 이름, 학과, 이름, 평점을 조회하시오.
 SELECT STUDENT_NO 학번 , STUDENT_NAME 이름 , DEPARTMENT_NAME "학과 이름" , AVG(POINT) 평점
@@ -172,7 +172,7 @@ SELECT STUDENT_NAME, STUDENT_ADDRESS
 FROM TB_STUDENT
 WHERE DEPARTMENT_NO = 038;
 
--- 18번 * 가장 높은 ????S
+-- 18번 * 가장 높은 ????
 -- 국어국문학과에서 총 평점이 가장 높은 학생의 이름과 학번을 조회하시오
 SELECT STUDENT_NO, STUDENT_NAME, AVG(POINT)
 FROM TB_STUDENT
