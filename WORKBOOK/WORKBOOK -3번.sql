@@ -120,10 +120,12 @@ ORDER BY 1;
 -- 13번 * 
 -- 예체능 계열 과목 중 과목 담당교수를 한 명도 배정받지 못한 과목을 찾아
 -- 과목 이름, 학과 이름을 조회하시오.
-SELECT CLASS_NAME , DEPARTMENT_NAME
-FROM TB_CLASS 
-JOIN TB_DEPARTMENT USING (DEPARTMENT_NO)
-WHERE CATEGORY = '예체능';
+SELECT CLASS_NAME , DEPARTMENT_NAME, PROFESSOR_NO 
+FROM TB_CLASS C
+JOIN TB_DEPARTMENT D ON (C.DEPARTMENT_NO = D.DEPARTMENT_NO)
+JOIN TB_PROFESSOR P ON (D.DEPARTMENT_NO = P.DEPARTMENT_NO)
+WHERE CATEGORY = '예체능'
+AND PROFESSOR_NO IS NULL;
 
 
 -- 14번 * 지도교수 미지정????
@@ -140,7 +142,7 @@ WHERE DEPARTMENT_NAME = '서반아어학과'
 GROUP BY STUDENT_NAME , PROFESSOR_NAME;
 
 
--- 15번 * 점이 4.0 이상인 학생???
+-- 15번 * 
 -- 휴학생이 아닌 학생 중 평점이 4.0 이상인 학생을 찾아
 -- 학생의 학번, 이름, 학과, 이름, 평점을 조회하시오.
 SELECT STUDENT_NO 학번 , STUDENT_NAME 이름 , DEPARTMENT_NAME "학과 이름" , AVG(POINT) 평점
@@ -185,12 +187,20 @@ WHERE DEPARTMENT_NO = (
 GROUP BY STUDENT_NO, STUDENT_NAME ;
 
 
-
--- 19번
+-- 19번 *
 -- 춘 기술대학교의 "환경조경학과"가 속한 같은 계열 학과들의
 -- 학과 별 전공과목 평점을 파악하기 위한 적절한 SQL문을 작성하시오
 -- 단, 출력헤더는 "계열 학과명", "전공평점"으로 표시되도록 하고, 
 -- 평점은 소수점 첫째자리까지만 반올림하여 표시
+SELECT DEPARTMENT_NAME "계열 학과명" , ROUND(AVG(POINT), 1) 전공평점
+FROM TB_DEPARTMENT 
+JOIN TB_STUDENT USING (DEPARTMENT_NO)
+JOIN TB_GRADE USING(STUDENT_NO)
+WHERE DEPARTMENT_NAME IN (
+	SELECT DEPARTMENT_NAME
+	FROM TB_DEPARTMENT 
+	WHERE CATEGORY = '자연과학')
+GROUP BY DEPARTMENT_NAME, POINT;
 
 
 
