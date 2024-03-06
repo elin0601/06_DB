@@ -194,7 +194,8 @@ FROM (
 WHERE RN <= 3;
 
 
-
+/***************************************************************************/
+-- SQL 활용 시험 풀이
 SELECT AREA_NAME 지역명, MEMBERID 아이디, MEMBER_NAME 이름, GRADE_NAME 등급명
 FROM TB_GRADE
 JOIN TB_MEMBER ON(GRADE = GRADE_CODE)
@@ -203,6 +204,7 @@ WHERE AREA_CODE = (
 	SELECT AREA_CODE FROM TB_MEMBER
 	WHERE MEMBER_NAME = '김영희')
 ORDER BY 이름;
+/***************************************************************************/
 
 
 -----------------------------------------------------------------------------
@@ -287,11 +289,10 @@ WHERE GRADE_NAME = '우수회원' AND MEMBER_NAME = '김영희';
 
 --14: * TB_MEMBER 테이블에서 등급이 '일반회원'이고 지역이 '경기'인 회원 중에서 가입일이 2024년 3월 1일 이후인 회원의 이름을 조회
 SELECT MEMBER_NAME
-FROM TB_GRADE
-JOIN TB_MEMBER ON (GRADE_CODE = GRADE)
-JOIN TB_AREA USING (AREA_CODE)
-WHERE AREA_NAME = '경기' 
-AND GRADE_NAME = '일반회원';
+FROM TB_MEMBER
+WHERE AREA_CODE = 031 
+AND GRADE = 10
+AND JOIN_DATE > TO_DATE('2024-03-01', 'YYY-MM-DD'); -- 오류나는게 정상임
 
 --15: TB_MEMBER 테이블에서 등급이 '특별회원'이면서 아이디가 'SS50000'이거나 '1u93'인 회원의 지역을 조회
 SELECT AREA_NAME, MEMBERID
@@ -309,9 +310,17 @@ AND MEMBER_NAME LIKE '%유%';
 --17: * TB_MEMBER 테이블에서 등급이 '일반회원'이면서 가입일이 현재 날짜보다 이전인 회원의 수를 조회
 SELECT COUNT(*)
 FROM TB_MEMBER
-WHERE GRADE = 10;
+WHERE GRADE = 10
+AND "내가 나중에 사용자가 가입한 날짜를 표시해줄 이름을 작성" > SYSDATE; -- 오류나는게 정상임
 
---18: * TB_MEMBER 테이블에서 등급이 '특별회원'이면서 가장 오래된 회원의 아이디를 조회
+--> JOIN_DATE : 사용자가 가입한 날짜를 나타냄
+--> SYSDATE : 내 컴퓨터에서 보이는 현제 날짜, 현재 시간
+--> TO_DATE : 'YYYY-MM-DD' 문자열로 저장된 날짜를 DATE 형식으로 변환하는 함수
+--> YYY MM DD : 년 월 일 표시
+--> hh mm ss : 시 분 초
+
+
+--18: TB_MEMBER 테이블에서 등급이 '특별회원'이면서 가장 오래된 회원의 아이디를 조회
 SELECT MEMBERID
 FROM TB_MEMBER 
 WHERE GRADE = 30 AND ROWNUM = 1;
@@ -326,9 +335,76 @@ AND MEMBER_NAME != '신사임당';
 SELECT MEMBER_NAME , GRADE_NAME
 FROM TB_MEMBER 
 JOIN TB_GRADE ON (GRADE_CODE = GRADE)
-WHERE GRADE_CODE = 10 AND AREA_CODE = 02
-ORDER BY GRADE_CODE;
+WHERE GRADE = 10 AND AREA_CODE = 02
+ORDER BY GRADE DESC; -- 오름차순 : ASC , 내림차순 DESC
 
+--21: TB_MEMBER 테이블에서 회원 이름의 길이가 4 이상인 회원의 아이디와 이름을 조회
+SELECT MEMBER_NAME, MEMBERID 
+FROM TB_MEMBER 
+WHERE LENGTH (MEMBER_NAME) >= 4;
+
+--22: TB_MEMBER 테이블에서 등급이 '특별회원'이면서 이름이 '김영희'가 아닌 회원의 아이디를 조회
+SELECT MEMBERID
+FROM TB_MEMBER
+WHERE GRADE = 30 
+AND MEMBER_NAME != '김영희';
+
+--23: TB_MEMBER 테이블에서 등급이 '일반회원'인 회원 중에서 이름이 '김영희'이거나 '아이유'인 회원의 수를 조회
+SELECT COUNT(*) 
+FROM TB_MEMBER 
+WHERE GRADE = 10
+OR MEMBER_NAME IN ('김영희', '아이유');
+
+--24: TB_MEMBER 테이블에서 등급이 '특별회원'이 아니면서 이름이 '홍길동'이 아닌 회원의 아이디를 조회
+SELECT MEMBERID
+FROM TB_MEMBER 
+WHERE GRADE != 30
+AND MEMBER_NAME != '홍길동';
+
+--25: TB_MEMBER 테이블에서 등급이 '일반회원'이면서 지역이 '인천' 또는 '경기'인 회원의 아이디와 이름을 조회
+SELECT MEMBERID , MEMBER_NAME
+FROM TB_MEMBER 
+WHERE GRADE = 10
+AND AREA_CODE IN (032, 031);
+
+--26: TB_MEMBER 테이블에서 등급이 '우수회원'이면서 이름이 '홍길동'이 아니면서 가장 최근에 가입한 회원의 아이디를 조회
+SELECT MEMBERID 
+FROM TB_MEMBER
+WHERE GRADE = '20'
+AND MEMBER_NAME != '홍길동'
+AND MEMBERID = (
+	SELECT MAX(MEMBERID) 
+	FROM TB_MEMBER 
+	WHERE GRADE = '20');
+
+--27: TB_MEMBER 테이블에서 등급이 '우수회원'이면서 가장 최근에 가입한 회원의 이름을 조회
+SELECT MEMBERID 
+FROM TB_MEMBER
+WHERE GRADE = '20' 
+AND MEMBERID = (
+	SELECT MAX(MEMBERID) 
+	FROM TB_MEMBER 
+	WHERE GRADE = '20');
+
+--28: TB_MEMBER 테이블에서 등급이 '일반회원'이면서 이름에 '김'이 들어가는 회원의 수를 조회
+SELECT COUNT(*) 
+FROM TB_MEMBER 
+WHERE GRADE = 10
+AND MEMBER_NAME LIKE '%김%';
+
+--29: TB_MEMBER 테이블에서 등급이 '특별회원'이 아닌 회원의 수를 조회
+SELECT COUNT(*) 
+FROM TB_MEMBER 
+WHERE GRADE = 30;
+
+--30: TB_MEMBER 테이블에서 등급이 '우수회원'인 회원 중에서 아이디가 가장 큰 회원의 이름을 조회
+SELECT MEMBER_NAME 
+FROM TB_MEMBER 
+WHERE GRADE = 20
+AND MEMBERID = (
+	SELECT MAX(MEMBERID) 
+	FROM TB_MEMBER 
+	WHERE GRADE = '20');
 
 
 
