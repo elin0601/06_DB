@@ -406,7 +406,64 @@ AND MEMBERID = (
 	FROM TB_MEMBER 
 	WHERE GRADE = '20');
 
+--31: 모든 회원의 이름과 등급을 조회
+SELECT MEMBER_NAME , GRADE 
+FROM TB_MEMBER;
 
+--32: ​서울에 거주하는 모든 회원의 이름과 등급을 조회
+SELECT MEMBER_NAME , GRADE 
+FROM TB_MEMBER  
+WHERE AREA_CODE = 02;
+
+--33: ​우수회원인 회원들의 이름과 등급을 조회
+SELECT MEMBER_NAME , GRADE 
+FROM TB_MEMBER 
+WHERE GRADE = 20;
+
+--34: ​특별회원 중에서 이름에 '이'가 들어가는 회원들의 이름을 조회
+SELECT MEMBER_NAME 
+FROM TB_MEMBER 
+WHERE GRADE = 30
+AND MEMBER_NAME LIKE '%이%';
+
+--35: ​각 등급별로 몇 명의 회원이 있는지 조회
+SELECT GRADE, COUNT(*) 
+FROM TB_MEMBER 
+GROUP BY GRADE;
+
+--36: 각 지역별로 몇 명의 회원이 있는지 조회
+SELECT AREA_CODE , COUNT(*) 
+FROM TB_MEMBER  
+GROUP BY AREA_CODE;
+
+--37: ​각 지역별로 등급이 '우수회원'인 회원의 수를 조회
+SELECT AREA_NAME, COUNT(*) 
+FROM TB_MEMBER 
+JOIN TB_AREA  USING (AREA_CODE)
+WHERE GRADE = '20'
+GROUP BY AREA_NAME;
+
+--38: ​​지역별로 회원 수가 2명 이상인 지역 중에서 등급이 '일반회원'인 회원 수가 1명 이상인 지역을 조회
+
+--39: ​​각 등급별로 평균 회원 수와 최대 회원 수를 조회
+
+--40: ​​등급이 '특별회원'이면서, 서울에 거주하는 회원 중에서 등급별로 가장 많은 회원 수를 가진 지역을 조회
+
+--41: ​​​회원 아이디가 'hong'으로 시작하고 등급이 '일반회원'인 회원의 이름을 조회
+
+--42: ​​​각 등급별로 회원의 수가 가장 많은 지역을 조회
+
+--43: ​​​각 지역별로 등급이 '특별회원'인 회원의 수를 조회 만약 그 지역에 특별회원이 없으면 '0'으로 표시
+
+--44: ​​​등급이 '특별회원'이 아니고 지역이 '서울'이 아닌 회원 중에서 이름이 '김'으로 시작하는 회원의 수를 조회
+
+--45: ​​​우수회원이면서 지역이 '경기'인 회원들의 평균 등급을 조회
+
+--46: ​​​서울과 경기에 거주하는 회원 중에서 이름이 '이'로 끝나는 회원의 등급을 조회
+
+--47: ​​​특별회원이 아닌 회원 중에서 등급이 가장 높은 회원의 이름을 조회
+
+--48: ​​​서울과 인천에 거주하며 등급이 '일반회원'인 회원의 수를 조회
 
 
 
