@@ -195,14 +195,139 @@ WHERE RN <= 3;
 
 
 
+SELECT AREA_NAME 지역명, MEMBERID 아이디, MEMBER_NAME 이름, GRADE_NAME 등급명
+FROM TB_GRADE
+JOIN TB_MEMBER ON(GRADE = GRADE_CODE)
+JOIN TB_AREA USING (AREA_CODE)
+WHERE AREA_CODE = (
+	SELECT AREA_CODE FROM TB_MEMBER
+	WHERE MEMBER_NAME = '김영희')
+ORDER BY 이름;
 
 
+-----------------------------------------------------------------------------
+-- [연습문제]
 
+--1: TB_AREA 테이블에서 지역 코드가 '02'인 지역의 이름을 조회
+SELECT AREA_NAME
+FROM TB_AREA 
+WHERE AREA_CODE = 02;
 
+--2: TB_AREA 테이블에서 지역 코드가 '02'인 지역의 이름을 조회
+SELECT AREA_NAME
+FROM TB_AREA 
+WHERE AREA_CODE = 02;
 
+--3: TB_MEMBER 테이블에서 모든 회원의 이름과 등급을 조회
+SELECT MEMBER_NAME , GRADE
+FROM TB_MEMBER;
 
+--4: TB_MEMBER 테이블에서 이름이 '이순신'인 회원의 아이디를 조회
+SELECT MEMBERID
+FROM TB_MEMBER 
+WHERE MEMBER_NAME = '이순신';
 
+--5: TB_MEMBER 테이블에서 등급이 '20'인 회원의 이름과 지역 코드를 조회
+SELECT MEMBER_NAME , AREA_CODE
+FROM TB_MEMBER
+WHERE GRADE = 20;
 
+--6: TB_MEMBER 테이블에서 지역이 '서울'인 회원의 아이디와 이름을 조회
+SELECT MEMBERID , MEMBER_NAME
+FROM TB_MEMBER
+JOIN TB_AREA USING (AREA_CODE)
+WHERE AREA_NAME = '서울';
+
+--7: TB_MEMBER 테이블에서 등급이 '특별회원'인 회원의 수를 조회
+SELECT COUNT(*)
+FROM TB_MEMBER
+JOIN TB_GRADE ON (GRADE_CODE = GRADE)
+WHERE GRADE_NAME = '특별회원';
+
+--8: TB_MEMBER 테이블에서 이름이 '홍길동'이거나 '박철수'인 회원의 아이디를 조회
+SELECT MEMBERID
+FROM TB_MEMBER
+WHERE MEMBER_NAME IN ('홍길동' , '박철수');
+
+--9: TB_MEMBER 테이블에서 등급이 '우수회원'이면서 지역 코드가 '031'인 회원의 이름을 조회
+SELECT MEMBER_NAME
+FROM TB_MEMBER 
+JOIN TB_GRADE ON (GRADE_CODE = GRADE)
+WHERE GRADE_NAME = '우수회원' 
+AND AREA_CODE = 031;
+
+--10: TB_MEMBER 테이블에서 아이디가 'kyh9876'인 회원의 등급을 조회
+SELECT GRADE_NAME
+FROM TB_MEMBER 
+JOIN TB_GRADE ON (GRADE_CODE = GRADE)
+WHERE MEMBERID = 'kyh9876';
+
+--11: TB_MEMBER 테이블에서 등급이 '일반회원'이면서 지역이 '경기' 또는 '인천'인 회원의 아이디와 이름을 조회
+SELECT MEMBERID , MEMBER_NAME
+FROM TB_GRADE
+JOIN TB_MEMBER ON (GRADE_CODE = GRADE)
+JOIN TB_AREA USING (AREA_CODE)
+WHERE GRADE_NAME = '일반회원'
+AND AREA_NAME IN ('경기' , '인천');
+
+--12: TB_MEMBER 테이블에서 등급이 '특별회원'인 회원 중에서 지역이 '서울'이 아닌 회원의 수를 조회
+SELECT COUNT(*)
+FROM TB_GRADE
+JOIN TB_MEMBER ON (GRADE_CODE = GRADE)
+JOIN TB_AREA USING (AREA_CODE)
+WHERE GRADE_NAME = '특별회원'
+AND AREA_NAME != '서울';
+
+--13: TB_MEMBER 테이블에서 등급이 '우수회원'이면서 이름이 '김영희'인 회원의 등급과 지역을 조회
+SELECT GRADE_NAME , AREA_NAME 
+FROM TB_GRADE
+JOIN TB_MEMBER ON (GRADE_CODE = GRADE)
+JOIN TB_AREA USING (AREA_CODE)
+WHERE GRADE_NAME = '우수회원' AND MEMBER_NAME = '김영희';
+
+--14: * TB_MEMBER 테이블에서 등급이 '일반회원'이고 지역이 '경기'인 회원 중에서 가입일이 2024년 3월 1일 이후인 회원의 이름을 조회
+SELECT MEMBER_NAME
+FROM TB_GRADE
+JOIN TB_MEMBER ON (GRADE_CODE = GRADE)
+JOIN TB_AREA USING (AREA_CODE)
+WHERE AREA_NAME = '경기' 
+AND GRADE_NAME = '일반회원';
+
+--15: TB_MEMBER 테이블에서 등급이 '특별회원'이면서 아이디가 'SS50000'이거나 '1u93'인 회원의 지역을 조회
+SELECT AREA_NAME, MEMBERID
+FROM TB_MEMBER 
+JOIN TB_AREA USING (AREA_CODE)
+WHERE GRADE = 30 
+AND MEMBERID IN ('SS50000' , '1u93');
+
+--16: TB_MEMBER 테이블에서 등급이 '우수회원'이면서 이름에 '유'가 포함된 회원의 아이디를 조회
+SELECT MEMBERID
+FROM TB_MEMBER 
+WHERE GRADE = 20
+AND MEMBER_NAME LIKE '%유%';
+
+--17: * TB_MEMBER 테이블에서 등급이 '일반회원'이면서 가입일이 현재 날짜보다 이전인 회원의 수를 조회
+SELECT COUNT(*)
+FROM TB_MEMBER
+WHERE GRADE = 10;
+
+--18: * TB_MEMBER 테이블에서 등급이 '특별회원'이면서 가장 오래된 회원의 아이디를 조회
+SELECT MEMBERID
+FROM TB_MEMBER 
+WHERE GRADE = 30 AND ROWNUM = 1;
+
+--19: TB_MEMBER 테이블에서 등급이 '우수회원'이면서 이름이 '신사임당'이 아닌 회원의 수를 조회
+SELECT COUNT(*) 
+FROM TB_MEMBER 
+WHERE GRADE = 20 
+AND MEMBER_NAME != '신사임당';
+
+--20: TB_MEMBER 테이블에서 등급이 '일반회원'이면서 지역이 '서울'인 회원의 이름과 등급을 조회 단, 결과를 등급에 따라 내림차순으로 정렬
+SELECT MEMBER_NAME , GRADE_NAME
+FROM TB_MEMBER 
+JOIN TB_GRADE ON (GRADE_CODE = GRADE)
+WHERE GRADE_CODE = 10 AND AREA_CODE = 02
+ORDER BY GRADE_CODE;
 
 
 
