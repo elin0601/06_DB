@@ -252,6 +252,7 @@ VALUES (999, '곽두원', '561016-1234567', 'kwack_dw@kh.or.kr',
         SYSDATE, NULL, DEFAULT);
        
 SELECT * FROM EMP_M01; 
+
 SELECT * FROM EMP_M02;
 
 UPDATE EMP_M02 SET SALARY = 0;
