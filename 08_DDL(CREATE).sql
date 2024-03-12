@@ -403,7 +403,7 @@ VALUES(NULL, 'user01', 'pass01', '신사임당', '여', '010-9999-9999', 'sin123
 -- [CONSTRAINT 이름] FOREIGN KEY (적용할컬럼명) REFERENCES 참조할테이블명 [(참조할컬럼)] [삭제룰]
 
 -- * 참조될 수 있는 컬럼은 PRIMARY KEY컬럼과, UNIQUE 지정된 컬럼만 외래키로 사용할 수 있음
---참조할 테이블의 참조할 컬럼명이 생략이 되면, PRIMARY KEY로 설정된 컬럼이 자동 참조할 컬럼이 됨
+-- 참조할 테이블의 참조할 컬럼명이 생략이 되면, PRIMARY KEY로 설정된 컬럼이 자동 참조할 컬럼이 됨
 
 CREATE TABLE USER_GRADE(
   GRADE_CODE NUMBER PRIMARY KEY,
@@ -659,6 +659,30 @@ VALUES(2, 'user02', 'pass02', '홍길동', '남자', '010-1234-5678', 'hong123@k
 -- 각 컬럼의 제약조건에 이름 부여할 것
 -- 5명 이상 INSERT할 것
 
+
+CREATE TABLE USER_TEST (
+	USER_NO VARCHAR(20) CONSTRAINT PK_USER_TEST PRIMARY KEY,
+	USER_ID VARCHAR2(20) CONSTRAINT UK_USER_ID UNIQUE,
+	USER_PWD VARCHAR(20) CONSTRAINT NN_USER_PWD NOT NULL,
+	PNO VARCHAR(30) CONSTRAINT NN_PNO NOT NULL ,
+	GENDER CHAR(10)  CONSTRAINT CK_GENDER CHECK(GENDER IN ('남', '여')),
+	PHONE VARCHAR(20),
+	ADDRESS VARCHAR(30),
+	STATUS CHAR(10) CONSTRAINT NN_STATUS NOT NULL ,
+
+	CONSTRAINT UK_PNO UNIQUE(PNO),
+	CONSTRAINT CK_STATUS CHECK(STATUS IN ('Y', 'N'))
+);
+
+
+INSERT INTO USER_TEST VALUES ('김영희', 'user01', 'qwer01', '990101-21234567', '여', '010-1234-1234', '서울시 중구 남대문로', 'N');
+INSERT INTO USER_TEST VALUES ('이영희', 'user02', 'qwer02', '990202-11234567', '남', '010-1234-5678', '서울시 서내문구', 'N');
+INSERT INTO USER_TEST VALUES ('박영희', 'user03', 'qwer03', '990303-11245677', '남', '010-2345-6456', '경기도 남양주', 'N');
+INSERT INTO USER_TEST VALUES ('강영희', 'user04', 'qwer04', '990404-24345678', '여', '010-1245-8789', '서울시 남천동', 'N');
+INSERT INTO USER_TEST VALUES ('홍영희', 'user05', 'qwer05', '990505-13454566', '남', '010-5534-4576', '충청남도 보령시', 'Y');
+INSERT INTO USER_TEST VALUES ('백영희', 'user06', 'qwer06', '990606-23545663', '남', '010-2345-4355', '제주도 서귀포시', 'N');
+
+--INSERT한 내용은 COMMIT을 안해서 실제 테이블에서 보이지 않음
 
 
 ----------------------------------------------------------------------------------------------------------------
